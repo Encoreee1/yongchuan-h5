@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>暴雨永川 · 线上应急救援纪实</title>
+<style>
+/* ========== RESET & BASE ========== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0a0a0a;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+/* ========== CONTAINER ========== */
+.container{position:relative;width:100%;height:100%;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.page{position:relative;width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+/* ========== BACKGROUNDS ========== */
+.bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;z-index:0}
+.bg::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.page-p1 .bg{background-image:url(assets/images/bg_cover.jpg)}
+.page-p2 .bg{background-image:url(assets/images/bg_disaster.jpg)}
+.page-p3 .bg{background-image:url(assets/images/bg_game.jpg)}
+.page-p4 .bg{background-image:url(assets/images/bg_game.jpg)}
+.page-p5 .bg{background-image:url(assets/images/bg_award.jpg)}
+.page-p6 .bg{background-image:url(assets/images/bg_summary.jpg)}
+/* ========== RAIN EFFECT (P1) ========== */
+.rain-container{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.rain-drop{position:absolute;width:2px;background:linear-gradient(transparent,rgba(255,255,255,.3));animation:rain linear infinite;top:-20px}
+@keyframes rain{0%{transform:translateY(-20px)}100%{transform:translateY(100vh)}}
+/* ========== CONTENT LAYER ========== */
+.content{position:relative;z-index:2;width:100%;max-width:420px;padding:20px 24px;text-align:center;color:#fff}
+/* ========== TYPOGRAPHY ========== */
+.title-main{font-size:2.2rem;font-weight:900;letter-spacing:.05em;text-shadow:0 2px 12px rgba(0,0,0,.5);line-height:1.3;margin-bottom:16px}
+.title-sub{font-size:1rem;font-weight:400;opacity:.85;line-height:1.6;margin-bottom:8px}
+.title-sm{font-size:1.5rem;font-weight:700;margin-bottom:12px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.body-text{font-size:.95rem;line-height:1.8;opacity:.9;text-align:left;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+/* ========== BUTTONS ========== */
+.btn{display:inline-block;padding:14px 40px;border-radius:30px;font-size:1.1rem;font-weight:700;letter-spacing:.05em;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;outline:none;color:#fff}
+.btn:active{transform:scale(.95)}
+.btn-primary{background:linear-gradient(135deg,#e74c3c,#c0392b);box-shadow:0 4px 20px rgba(231,76,60,.4)}
+.btn-accent{background:linear-gradient(135deg,#f39c12,#e67e22);box-shadow:0 4px 20px rgba(243,156,18,.4)}
+.btn-success{background:linear-gradient(135deg,#27ae60,#2ecc71);box-shadow:0 4px 20px rgba(39,174,96,.4)}
+.btn-white{background:#fff;color:#333;box-shadow:0 4px 20px rgba(255,255,255,.3)}
+/* ========== INDICATORS ========== */
+.page-indicator{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:8px}
+.page-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35);transition:all .3s}
+.page-dot.active{background:#fff;box-shadow:0 0 8px rgba(255,255,255,.6);height:24px;border-radius:4px}
+/* ========== PAGE SPECIFIC ========== */
+/* P3: Explore debris */
+.explore-area{position:relative;width:100%;height:55vh;margin:16px 0}
+.debris-item{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.15);border:2px dashed rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;animation:float 3s ease-in-out infinite}
+.debris-item img{width:40px;height:40px;object-fit:contain}
+.debris-item:active{background:rgba(255,255,255,.3);transform:scale(1.15)}
+.debris-item.found{background:rgba(46,204,113,.3);border-color:#2ecc71;animation:none}
+.debris-item.checked{opacity:.4;pointer-events:none;animation:none}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pulseBlow{0%,100%{box-shadow:0 0 0 0 rgba(255,165,0,.4)}50%{box-shadow:0 0 0 16px rgba(255,165,0,0)}}
+@keyframes whistleShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-15deg)}40%{transform:rotate(15deg)}60%{transform:rotate(-10deg)}80%{transform:rotate(10deg)}}
+/* P4: Puzzle slats */
+.puzzle-board{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:260px;height:260px;margin:20px auto}
+.puzzle-slot{background:rgba(255,255,255,.15);border:2px dashed rgba(255,255,255,.5);border-radius:12px;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.puzzle-slot.filled{background:rgba(46,204,113,.25);border-color:#2ecc71}
+.puzzle-slot img{width:36px;height:36px;object-fit:contain}
+.puzzle-tray{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.puzzle-piece{width:60px;height:60px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:grab;transition:transform .2s;touch-action:none}
+.puzzle-piece img{width:36px;height:36px;object-fit:contain;pointer-events:none}
+.puzzle-piece.dragging{transform:scale(1.15);z-index:10;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+/* P4: Sequence buttons */
+.seq-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.seq-btn{padding:14px 22px;border-radius:14px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:all .3s}
+.seq-btn:active{transform:scale(.95)}
+.seq-btn.done{background:rgba(46,204,113,.35);border-color:#2ecc71;pointer-events:none}
+.seq-btn.wrong{animation:shake .5s;background:rgba(231,76,60,.35)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+/* P4: Drag supplies */
+.supply-area{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.supply-item{width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:none;transition:transform .2s,opacity .3s}
+.supply-item img{width:36px;height:36px;object-fit:contain;pointer-events:none}
+.supply-item.dragging{transform:scale(1.2);z-index:10;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.supply-item.used{opacity:.2;pointer-events:none}
+.target-zone{width:100px;height:100px;border-radius:50%;border:3px dashed rgba(255,255,255,.6);margin:20px auto;display:flex;align-items:center;justify-content:center;transition:all .3s;font-size:.85rem;color:rgba(255,255,255,.6)}
+.target-zone.highlight{border-color:#2ecc71;background:rgba(46,204,113,.2)}
+/* P5: Certificate reveal */
+.cert-wrapper{position:relative;width:95%;max-width:440px;height:500px;margin:0 auto;overflow:hidden;border-radius:16px}
+.cert-cover{position:absolute;inset:0;background:linear-gradient(135deg,#c0392b,#8e44ad);z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:16px;cursor:pointer;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.cert-cover.unveiled{transform:translateY(-105%)}
+.cert-cover-text{font-size:.9rem;opacity:.8;margin-top:12px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+.cert-inner{position:absolute;inset:0;background:url(assets/images/cert_v3.jpg) center/cover;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;border-radius:16px;color:#333}
+.cert-name{font-size:1.3rem;font-weight:900;margin:8px 0;color:#8b0000}
+.cert-desc{font-size:.82rem;color:#555;text-align:center;line-height:1.7;max-width:300px;word-break:keep-all}
+.cert-stamp{font-size:2.2rem;margin-top:12px;opacity:.7}
+/* P6: Share gratitude */
+.share-anim{font-size:4rem;animation:bounceIn .6s cubic-bezier(.68,-.55,.27,1.55)}@keyframes bounceIn{0%{transform:scale(0);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+/* ========== TOAST & OVERLAY ========== */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:200;background:rgba(0,0,0,.85);color:#fff;padding:12px 24px;border-radius:24px;font-size:.9rem;pointer-events:none;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+.progress-ring{position:relative;width:80px;height:80px;margin:0 auto}
+.progress-ring svg{transform:rotate(-90deg)}
+.progress-ring circle{fill:none;stroke-width:5}
+.progress-ring .bg-ring{stroke:rgba(255,255,255,.2)}
+.progress-ring .fg-ring{stroke:#2ecc71;stroke-dasharray:220;stroke-dashoffset:220;transition:stroke-dashoffset .1s linear}
+.progress-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700}
+/* ========== NAV HINT ========== */
+.swipe-hint{position:absolute;bottom:max(64px,env(safe-area-inset-bottom,20px));left:50%;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.7;animation:bob 2s ease-in-out infinite;pointer-events:none}
+.swipe-hint span{font-size:.75rem;color:#fff}
+.swipe-hint .arrow{width:24px;height:24px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg)}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+/* ========== NAV BUTTONS ========== */
+.nav-btn{position:fixed;z-index:150;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;outline:none;color:#fff;font-size:1.2rem}
+.nav-btn:active{background:rgba(255,255,255,.3);transform:scale(.9)}
+.nav-btn.hidden{opacity:0;pointer-events:none}
+.nav-up{top:max(12px,env(safe-area-inset-top,12px));left:50%;transform:translateX(-50%)}
+.nav-down{bottom:max(12px,env(safe-area-inset-bottom,12px));left:50%;transform:translateX(-50%)}
+.nav-back{top:max(12px,env(safe-area-inset-top,12px));left:max(12px,env(safe-area-inset-left,12px))}
+@media(min-width:768px){.nav-btn{width:48px;height:48px;font-size:1.4rem}}
+/* ========== AI LABEL ========== */
+.ai-label{position:fixed;bottom:8px;right:12px;z-index:100;font-size:.65rem;color:rgba(255,255,255,.4);pointer-events:none}
+/* ========== RESPONSIVE ========== */
+@media(min-width:420px){.content{max-width:420px}}
+@media(max-height:700px){.title-main{font-size:1.8rem}.explore-area{height:45vh}}
+</style>
+</head>
+<body>
+
+<!-- Page Indicator -->
+<div class="page-indicator" id="pageIndicator"></div>
+
+<!-- AI Label -->
+<div class="ai-label">AI 辅助生成素材 · 标注</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Main Container -->
+<div class="container" id="container">
+
+  <!-- ===== PAGE 1: COVER ===== -->
+  <section class="page page-p1" data-page="0">
+    <div class="bg"></div>
+    <div class="rain-container" id="rainContainer"></div>
+    <div class="content">
+      <h1 class="title-main">暴雨永川<br>线上应急救援纪实</h1>
+      <p class="title-sub">2025年夏 · 永川特大暴雨<br>一场与时间赛跑的救援行动</p>
+    </div>
+    <div class="swipe-hint">
+      <div class="arrow"></div>
+      <span>向上滑动开始</span>
+    </div>
+  </section>
+
+  <!-- ===== PAGE 2: DISASTER INTRO ===== -->
+  <section class="page page-p2" data-page="1">
+    <div class="bg"></div>
+    <div class="content">
+      <h2 class="title-sm">灾情速览</h2>
+      <p class="body-text">
+        2025年7月，重庆市永川区遭遇特大暴雨袭击，<br>
+        6小时降雨量突破200毫米，城区多地内涝严重。<br><br>
+        多处道路中断，部分社区被洪水围困，<br>
+        数百名群众亟待救援。<br><br>
+        面对险情，救援力量火速集结，<br>
+        展开了一场惊心动魄的生命救援。
+      </p>
+      <div style="margin-top:24px">
+        <button class="btn btn-accent" onclick="goToPage(2,'forward')">开始救援任务 →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PAGE 3: FIND TOOLS (INTERACTIVE 1) ===== -->
+  <section class="page page-p3" data-page="2">
+    <div class="bg"></div>
+    <div class="content" style="height:100%;display:flex;flex-direction:column;justify-content:center">
+      <h2 class="title-sm" id="p3Title">🔍 探索救援现场</h2>
+      <p style="font-size:.85rem;opacity:.8;margin-bottom:8px" id="p3Hint">点击杂物寻找工具，滑动清除路障</p>
+      <div class="explore-area" id="exploreArea"></div>
+      <p style="font-size:.8rem;opacity:.6" id="p3Status">已探索 0 处</p>
+      <!-- Sweep barrier (appears after exploring a few items) -->
+      <div id="sweepArea" style="display:none;width:100%;margin-top:12px">
+        <p style="font-size:.85rem;margin-bottom:6px">👆 发现障碍！滑动清除，查看后方情况</p>
+        <div id="barrierZone" style="width:90%;height:60px;margin:0 auto;background:rgba(255,255,255,.15);border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:rgba(255,255,255,.6);touch-action:pan-y;position:relative;overflow:hidden">
+          <div id="barrierFill" style="position:absolute;left:0;top:0;height:100%;background:rgba(46,204,113,.3);width:0;border-radius:30px;transition:none;pointer-events:none"></div>
+          <span id="barrierLabel" style="position:relative;z-index:1">← 左滑清理 →</span>
+        </div>
+      </div>
+      <div id="trappedPerson" style="display:none;margin-top:12px;font-size:2rem;font-weight:700;animation:bounceIn .6s">😰 前方发现被困人员！快进入救援！</div>
+    </div>
+  </section>
+
+  <!-- ===== PAGE 4: CORE RESCUE (INTERACTIVE 2) ===== -->
+  <section class="page page-p4" data-page="3">
+    <div class="bg"></div>
+    <div class="content" style="height:100%;display:flex;flex-direction:column;justify-content:center">
+      <h2 class="title-sm" id="p4Title">⛑️ 核心救援任务</h2>
+      <p style="font-size:.8rem;opacity:.7;margin-bottom:8px" id="p4StepLabel">第 1/4 步</p>
+      <!-- Step 1: Blow whistle (found in P3) -->
+      <div id="stepWhistle">
+        <p style="font-size:.9rem;margin-bottom:12px">使用在P3找到的哨子，长按吹响求救信号</p>
+        <div class="progress-ring" id="whistleRing">
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle class="bg-ring" cx="40" cy="40" r="35"/>
+            <circle class="fg-ring" id="whistleProgress" cx="40" cy="40" r="35"/>
+          </svg>
+          <div class="progress-center"><img src="assets/images/icon_whistle.png" style="width:40px;height:40px;object-fit:contain"></div>
+        </div>
+      </div>
+      <!-- Step 2: Puzzle -->
+      <div id="stepPuzzle" style="display:none">
+        <p style="font-size:.85rem;margin-bottom:8px">拖拽拼图碎片，修复救援通道</p>
+        <div class="puzzle-board" id="puzzleBoard"></div>
+        <div class="puzzle-tray" id="puzzleTray"></div>
+      </div>
+      <!-- Step 3: Sequence click -->
+      <div id="stepSequence" style="display:none">
+        <p style="font-size:.85rem;margin-bottom:8px">按正确顺序施救</p>
+        <div class="seq-btns" id="seqBtns">
+          <button class="seq-btn" data-step="1">🤗 安抚</button>
+          <button class="seq-btn" data-step="2">🩹 包扎</button>
+          <button class="seq-btn" data-step="3">🚑 转移</button>
+        </div>
+      </div>
+      <!-- Step 4: Drag supplies -->
+      <div id="stepSupplies" style="display:none">
+        <p style="font-size:.85rem;margin-bottom:8px">拖拽急救物资救助被困者</p>
+        <div class="target-zone" id="targetZone">🎯<br>救助目标</div>
+        <div class="supply-area" id="supplyArea"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PAGE 5: AWARD (INTERACTIVE 3) ===== -->
+  <section class="page page-p5" data-page="4">
+    <div class="bg"></div>
+    <div class="content">
+      <h2 class="title-sm">🏆 救援任务完成</h2>
+      <div class="cert-wrapper" id="certWrapper">
+        <div class="cert-cover" id="certCover">
+          <div style="font-size:3rem">🏅</div>
+          <div class="cert-cover-text">← 滑动揭幕 →</div>
+        </div>
+        <div class="cert-inner">
+          <div style="font-size:2rem">📜</div>
+          <div class="cert-name">荣誉证书</div>
+          <div class="cert-desc">
+            在"暴雨永川"应急救援行动中<br>
+            表现卓越，成功完成全部救援任务<br>
+            特此表彰！
+          </div>
+          <div class="cert-stamp">🏅</div>
+        </div>
+      </div>
+      <button class="btn btn-success" style="margin-top:20px" onclick="shareResult()">📤 分享荣誉</button>
+    </div>
+  </section>
+
+  <!-- ===== PAGE 6: SUMMARY ===== -->
+  <section class="page page-p6" data-page="5">
+    <div class="bg"></div>
+    <div class="content">
+      <h2 class="title-sm">暴雨无情 · 应急有术</h2>
+      <p class="body-text" style="text-align:center">
+        通过模拟救援体验，我们掌握了<br>
+        应急求救、伤员救助的基本知识。<br><br>
+        向所有在暴雨中逆行的守护者致敬！<br><br>
+        <span style="font-size:.8rem;opacity:.6">
+          数据来源：重庆市应急管理局公开通报<br>
+          部分素材由AI辅助生成
+        </span>
+      </p>
+      <div class="share-anim" style="margin-top:16px">🙏</div>
+      <button class="btn btn-white" style="margin-top:20px" onclick="restart()">🔄 再次体验</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- Navigation Buttons -->
+<button class="nav-btn nav-up" id="navUp" title="上一页" onclick="prevPage()">▲</button>
+<button class="nav-btn nav-down" id="navDown" title="下一页" onclick="nextPage()">▼</button>
+
+<!-- Hidden audio elements -->
+<audio id="audioGuideStart" preload="auto" src="assets/audio/guide_start.mp3"></audio>
+<audio id="audioGuideExplore" preload="auto" src="assets/audio/guide_explore.mp3"></audio>
+<audio id="audioGuideWhistle" preload="auto" src="assets/audio/guide_whistle.mp3"></audio>
+<audio id="audioGuideRescue" preload="auto" src="assets/audio/guide_rescue.mp3"></audio>
+<audio id="audioGuideAward" preload="auto" src="assets/audio/guide_award.mp3"></audio>
+<audio id="audioGuideSummary" preload="auto" src="assets/audio/guide_summary.mp3"></audio>
+<audio id="audioAlarm" preload="auto" src="assets/audio/alarm_sound.mp3"></audio>
+
+<script>
+// ============ GLOBAL STATE ============
+let currentPage = 0;
+const TOTAL_PAGES = 6;
+const container = document.getElementById('container');
+const toast = document.getElementById('toast');
+
+// ============ INIT ============
+function init() {
+  createRain();
+  createPageIndicator();
+  createExploreItems();
+  createPuzzle();
+  createSupplies();
+  initTouchNavigation();
+  updateNavButtons();
+  // Lazy load backgrounds
+  lazyLoadBg();
+}
+
+// ============ RAIN EFFECT ============
+function createRain() {
+  const rc = document.getElementById('rainContainer');
+  for (let i = 0; i < 60; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'rain-drop';
+    drop.style.left = Math.random() * 100 + '%';
+    drop.style.animationDuration = (.4 + Math.random() * .6) + 's';
+    drop.style.animationDelay = Math.random() * 2 + 's';
+    drop.style.height = (10 + Math.random() * 20) + 'px';
+    rc.appendChild(drop);
+  }
+}
+
+// ============ PAGE INDICATOR ============
+function createPageIndicator() {
+  const pi = document.getElementById('pageIndicator');
+  for (let i = 0; i < TOTAL_PAGES; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'page-dot' + (i === 0 ? ' active' : '');
+    pi.appendChild(dot);
+  }
+}
+function updateIndicator() {
+  const dots = document.querySelectorAll('.page-dot');
+  dots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
+}
+
+// ============ NAVIGATION ============
+let visitedPages = new Set([0]); // Track pages already visited (page 0 visited at start)
+let pageTransitioning = false; // Lock during transition
+let pendingAudio = null; // Track pending audio timeout for cancellation
+
+function goToPage(idx, direction) {
+  if (idx < 0 || idx >= TOTAL_PAGES || pageTransitioning) return;
+  pageTransitioning = true;
+  const isForward = direction === 'forward'; // forward=next, backward=prev, undefined=direct
+
+  // Cancel any pending audio from previous page
+  if (pendingAudio) { clearTimeout(pendingAudio); pendingAudio = null; }
+  // Stop all currently playing audio
+  document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
+
+  currentPage = idx;
+  container.style.transform = `translateY(-${idx * 100}%)`;
+  updateIndicator();
+  updateNavButtons();
+
+  // Only play audio when going FORWARD to a NEW page (not when going back)
+  const isFirstVisit = !visitedPages.has(idx);
+  if (isFirstVisit && isForward) {
+    visitedPages.add(idx);
+    // Delay audio to sync with transition animation (500ms = transition duration)
+    // P1: silent, P2: silent, P3: explore, P4: rescue, P5: award, P6: summary
+    const audios = [null, null, 'audioGuideExplore', 'audioGuideRescue', 'audioGuideAward', 'audioGuideSummary'];
+    const audioId = audios[idx];
+    if (audioId) pendingAudio = setTimeout(() => { playAudio(audioId); pendingAudio = null; }, 500);
+  } else if (isForward) {
+    visitedPages.add(idx);
+  }
+
+  // Init interactions on page open
+  if (idx === 2) initP3();
+  if (idx === 3) initP4();
+
+  // Release transition lock
+  setTimeout(() => { pageTransitioning = false; }, 550);
+}
+
+function updateNavButtons() {
+  const up = document.getElementById('navUp');
+  const down = document.getElementById('navDown');
+  up.classList.toggle('hidden', currentPage === 0);
+  down.classList.toggle('hidden', currentPage === TOTAL_PAGES - 1);
+}
+
+function nextPage() { goToPage(currentPage + 1, 'forward') }
+function prevPage() { goToPage(currentPage - 1, 'backward') }
+
+// Keyboard navigation for desktop
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'j') {
+    e.preventDefault(); nextPage();
+  } else if (e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'k') {
+    e.preventDefault(); prevPage();
+  } else if (e.key === 'Home') {
+    e.preventDefault(); visitedPages.clear(); visitedPages.add(0); goToPage(0);
+  } else if (e.key === 'End') {
+    e.preventDefault(); goToPage(TOTAL_PAGES - 1, 'forward');
+  }
+});
+
+// Mouse wheel navigation for desktop
+let wheelTimer = 0;
+document.addEventListener('wheel', e => {
+  const now = Date.now();
+  if (now - wheelTimer < 800) return; // debounce
+  if (Math.abs(e.deltaY) < 40) return;
+  wheelTimer = now;
+  if (e.deltaY > 0) nextPage();
+  else prevPage();
+}, {passive: true});
+
+function initTouchNavigation() {
+  let startY = 0, startX = 0, isGameArea = false, inNavZone = false;
+  document.addEventListener('touchstart', e => {
+    startY = e.touches[0].clientY;
+    startX = e.touches[0].clientX;
+    // Top 12% and bottom 12% are always navigation zones
+    const h = window.innerHeight;
+    inNavZone = (startY < h * 0.12) || (startY > h * 0.88);
+    // Check if touch started on draggable/interactive game elements
+    isGameArea = !inNavZone && e.target.closest('.debris-item,.puzzle-piece,.supply-item,.seq-btn,#whistleRing,#barrierZone,#certCover');
+  }, {passive: true});
+  document.addEventListener('touchend', e => {
+    if (isGameArea && !inNavZone) { isGameArea = false; inNavZone = false; return; }
+    isGameArea = false; inNavZone = false;
+    const dy = startY - e.changedTouches[0].clientY;
+    const dx = startX - e.changedTouches[0].clientX;
+    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 50) {
+      if (dy > 0 && currentPage < TOTAL_PAGES - 1) nextPage();
+      else if (dy < 0 && currentPage > 0) prevPage();
+    }
+  });
+}
+
+// ============ AUDIO ============
+function playAudio(id) {
+  // Cancel any pending page-transition audio (interaction takes priority)
+  if (pendingAudio) { clearTimeout(pendingAudio); pendingAudio = null; }
+  // Stop ALL audio first - only one plays at a time
+  document.querySelectorAll('audio').forEach(a => { a.pause(); a.currentTime = 0; });
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.currentTime = 0;
+  el.play().catch(() => {});
+}
+
+// ============ TOAST ============
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// ============ P3: EXPLORE ============
+const debrisIcons = ['icon_debris', 'icon_tree', 'icon_car', 'icon_barrel', 'icon_blanket'];
+let p3Explored = 0;
+let whistleFound = false;
+let sweepDone = false;
+
+function createExploreItems() {
+  const area = document.getElementById('exploreArea');
+  const positions = [
+    {top:'10%',left:'10%'}, {top:'15%',left:'55%'}, {top:'35%',left:'25%'},
+    {top:'45%',left:'60%'}, {top:'60%',left:'15%'}, {top:'55%',left:'70%'},
+    {top:'75%',left:'40%'}, {top:'70%',left:'75%'}
+  ];
+  const whistleIdx = Math.floor(Math.random() * positions.length);
+
+  positions.forEach((pos, i) => {
+    const el = document.createElement('div');
+    el.className = 'debris-item';
+    el.style.top = pos.top;
+    el.style.left = pos.left;
+    el.style.animationDelay = (i * .3) + 's';
+    const iconName = i === whistleIdx ? 'icon_whistle' : debrisIcons[i % debrisIcons.length];
+    el.innerHTML = `<img src="assets/images/${iconName}.png" alt="">`;
+    el.dataset.isWhistle = i === whistleIdx ? '1' : '0';
+    el.addEventListener('click', (e) => onDebrisClick(el, e));
+    area.appendChild(el);
+  });
+}
+
+function initP3() {
+  // Audio handled by goToPage
+}
+
+function onDebrisClick(el, e) {
+  if (el.classList.contains('checked')) return;
+  el.classList.add('checked');
+  p3Explored++;
+  document.getElementById('p3Status').textContent = `已探索 ${p3Explored} 处`;
+
+  if (el.dataset.isWhistle === '1') {
+    // Whistle is a standalone discovery - just a cool find
+    el.classList.add('found');
+    whistleFound = true;
+    showToast('🔔 找到应急求救哨！留到救援时使用');
+    document.getElementById('p3Title').textContent = '🔔 发现关键道具：应急哨';
+    // Check if both conditions met to advance
+    checkP3Complete();
+  } else {
+    const msgs = ['只是碎石...', '空无一物', '继续找找看', '没有发现', '再探索一下'];
+    showToast(msgs[Math.floor(Math.random() * msgs.length)]);
+  }
+
+  // Sweep appears after exploring 3+ items (independent of whistle)
+  if (p3Explored >= 3 && !sweepDone && document.getElementById('sweepArea').style.display === 'none') {
+    document.getElementById('sweepArea').style.display = 'block';
+    document.getElementById('p3Hint').textContent = '发现路障！滑动清除，看看后面有什么';
+    initSweep();
+    showToast('🚧 发现障碍物！滑动清除');
+  }
+}
+
+// Module-level sweep state (avoids listener accumulation)
+let sweepState = { sweeping: false, startX: 0 };
+let sweepInited = false;
+
+function initSweep() {
+  const zone = document.getElementById('barrierZone');
+  const fill = document.getElementById('barrierFill');
+
+  // Reset sweep state
+  sweepState.sweeping = false;
+  sweepState.startX = 0;
+
+  function finishSweep() {
+    sweepDone = true;
+    fill.style.width = '100%';
+    fill.style.background = 'rgba(46,204,113,.5)';
+    document.getElementById('barrierLabel').textContent = '✅ 清理完成！';
+    document.getElementById('trappedPerson').style.display = 'block';
+    playAudio('audioAlarm');
+    showToast('😰 发现被困人员！');
+    checkP3Complete();
+  }
+
+  // Only attach listeners once
+  if (!sweepInited) {
+    sweepInited = true;
+    zone.addEventListener('touchstart', e => { e.preventDefault(); sweepState.sweeping = true; sweepState.startX = e.touches[0].clientX; }, {passive: false});
+    zone.addEventListener('touchmove', e => {
+      e.preventDefault();
+      if (!sweepState.sweeping || sweepDone) return;
+      const dist = Math.abs(e.touches[0].clientX - sweepState.startX);
+      const pct = Math.max(0, Math.min(100, (dist / 120) * 100));
+      fill.style.width = pct + '%';
+      if (pct > 75) finishSweep();
+    }, {passive: false});
+    zone.addEventListener('touchend', () => { sweepState.sweeping = false; });
+    zone.addEventListener('mousedown', e => { e.preventDefault(); sweepState.sweeping = true; sweepState.startX = e.clientX; });
+    document.addEventListener('mousemove', e => {
+      if (!sweepState.sweeping || sweepDone) return;
+      const dist = Math.abs(e.clientX - sweepState.startX);
+      const pct = Math.max(0, Math.min(100, (dist / 120) * 100));
+      fill.style.width = pct + '%';
+      if (pct > 75) finishSweep();
+    });
+    document.addEventListener('mouseup', () => { sweepState.sweeping = false; });
+  }
+}
+
+// Auto-advance P3 only when BOTH trapped person found AND whistle collected
+function checkP3Complete() {
+  if (sweepDone && whistleFound) {
+    showToast('✅ 哨子已找到，被困人员已救出！准备进入救援');
+    // Wait for alarm audio to finish before advancing
+    const alarm = document.getElementById('audioAlarm');
+    if (alarm && !alarm.ended && alarm.duration) {
+      const remaining = (alarm.duration - alarm.currentTime) * 1000 + 500;
+      setTimeout(() => nextPage(), Math.max(remaining, 3000));
+    } else {
+      setTimeout(() => nextPage(), 3500);
+    }
+  } else if (sweepDone && !whistleFound) {
+    showToast('🔍 还需要找到应急哨子！继续探索');
+  }
+}
+
+// ============ P4: CORE RESCUE ============
+let p4Step = 1;
+
+function initP4() {
+  p4Step = 1;
+  showP4Step(1);
+  // Audio handled by goToPage
+}
+
+function showP4Step(step) {
+  ['stepWhistle','stepPuzzle','stepSequence','stepSupplies'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  const map = {1:'stepWhistle',2:'stepPuzzle',3:'stepSequence',4:'stepSupplies'};
+  const el = document.getElementById(map[step]);
+  if (el) el.style.display = 'block';
+  document.getElementById('p4StepLabel').textContent = `第 ${step}/4 步`;
+
+  if (step === 1) { initLongPress(); playAudio('audioGuideWhistle'); }
+  if (step === 2) initPuzzleDrag();
+  if (step === 3) initSequence();
+  if (step === 4) initSupplyDrag();
+}
+
+// Step 1: Long press whistle (whistle was found in P3, used here)
+function initLongPress() {
+  const ring = document.getElementById('whistleRing');
+  const prog = document.getElementById('whistleProgress');
+  const center = ring.querySelector('.progress-center');
+  let timer, startTime;
+  const DURATION = 1500;
+  const circumference = 2 * Math.PI * 35;
+
+  function resetRing() {
+    prog.style.strokeDashoffset = circumference;
+    center.innerHTML = '<img src="assets/images/icon_whistle.png" style="width:40px;height:40px;object-fit:contain">';
+  }
+  resetRing();
+
+  function updateProgress(ms) {
+    const pct = Math.min(ms / DURATION, 1);
+    prog.style.strokeDashoffset = circumference * (1 - pct);
+    center.textContent = pct >= 1 ? '✅' : Math.round(pct * 100) + '%';
+  }
+
+  function startPress() {
+    startTime = Date.now();
+    center.textContent = '🔊';
+    timer = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      updateProgress(elapsed);
+      if (elapsed >= DURATION) {
+        clearInterval(timer);
+        showToast('📢 求救信号已发出！');
+        setTimeout(() => { p4Step = 2; showP4Step(2); }, 600);
+      }
+    }, 50);
+  }
+
+  function endPress() {
+    clearInterval(timer);
+    if (Date.now() - (startTime || 0) < DURATION) {
+      resetRing();
+      showToast('请长按直到进度条满');
+    }
+  }
+
+  // Touch
+  ring.addEventListener('touchstart', e => { e.preventDefault(); startPress(); }, {passive: false});
+  ring.addEventListener('touchend', endPress);
+  // Mouse
+  ring.addEventListener('mousedown', e => { e.preventDefault(); startPress(); });
+  ring.addEventListener('mouseup', endPress);
+  ring.addEventListener('mouseleave', endPress);
+}
+
+// Step 2: Puzzle
+const PUZZLE_ICONS = ['icon_bandage', 'icon_medkit', 'icon_stretcher', 'icon_water'];
+
+function createPuzzle() {
+  const board = document.getElementById('puzzleBoard');
+  board.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'puzzle-slot';
+    slot.dataset.slot = i;
+    // Show faint hint of the target icon
+    slot.innerHTML = `<img src="assets/images/${PUZZLE_ICONS[i]}.png" style="width:36px;height:36px;object-fit:contain;opacity:.25">`;
+    board.appendChild(slot);
+  }
+}
+
+function resetPuzzleSlots() {
+  document.querySelectorAll('.puzzle-slot').forEach(s => {
+    s.classList.remove('filled');
+    const i = parseInt(s.dataset.slot);
+    if (!isNaN(i)) {
+      s.innerHTML = `<img src="assets/images/${PUZZLE_ICONS[i]}.png" style="width:36px;height:36px;object-fit:contain;opacity:.25">`;
+    }
+  });
+}
+
+function initPuzzleDrag() {
+  const tray = document.getElementById('puzzleTray');
+  tray.innerHTML = '';
+  resetPuzzleSlots();
+  const pieces = [
+    {id:0, icon:'icon_bandage', correct:0},
+    {id:1, icon:'icon_medkit', correct:1},
+    {id:2, icon:'icon_stretcher', correct:2},
+    {id:3, icon:'icon_water', correct:3},
+  ];
+  // Shuffle
+  const shuffled = [...pieces].sort(() => Math.random() - .5);
+  let placedCount = 0;
+
+  shuffled.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'puzzle-piece';
+    el.innerHTML = `<img src="assets/images/${p.icon}.png" alt="">`;
+    el.dataset.correct = p.correct;
+    el.dataset.id = p.id;
+    tray.appendChild(el);
+    makeDraggable(el, () => {
+      placedCount++;
+      if (placedCount === 4) {
+        showToast('✅ 救援通道已打通！');
+        setTimeout(() => { p4Step = 3; showP4Step(3); }, 800);
+      }
+    });
+  });
+}
+
+function makeDraggable(el, onPlace) {
+  let offsetX, offsetY, placed = false;
+
+  el.addEventListener('touchstart', e => {
+    if (placed) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    const rect = el.getBoundingClientRect();
+    offsetX = t.clientX - rect.left;
+    offsetY = t.clientY - rect.top;
+    el.classList.add('dragging');
+  }, {passive: false});
+
+  el.addEventListener('touchmove', e => {
+    if (placed) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    el.style.position = 'fixed';
+    el.style.left = (t.clientX - offsetX) + 'px';
+    el.style.top = (t.clientY - offsetY) + 'px';
+    el.style.zIndex = '100';
+  }, {passive: false});
+
+  el.addEventListener('touchend', e => {
+    if (placed) return;
+    el.classList.remove('dragging');
+    el.style.position = '';
+    el.style.left = '';
+    el.style.top = '';
+    el.style.zIndex = '';
+
+    // Check if dropped on correct slot
+    const slots = document.querySelectorAll('.puzzle-slot');
+    const touchX = e.changedTouches[0].clientX;
+    const touchY = e.changedTouches[0].clientY;
+
+    slots.forEach(slot => {
+      const sr = slot.getBoundingClientRect();
+      if (touchX >= sr.left - 20 && touchX <= sr.right + 20 &&
+          touchY >= sr.top - 20 && touchY <= sr.bottom + 20 &&
+          parseInt(slot.dataset.slot) === parseInt(el.dataset.correct)) {
+        // Correct placement!
+        placed = true;
+        slot.classList.add('filled');
+        slot.innerHTML = el.innerHTML;
+        el.style.display = 'none';
+        onPlace();
+      }
+    });
+  });
+
+  // Mouse support
+  el.addEventListener('mousedown', e => {
+    if (placed) return;
+    e.preventDefault();
+    const rect = el.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    el.classList.add('dragging');
+    el.style.position = 'fixed';
+    el.style.zIndex = '100';
+
+    const onMove = ev => {
+      el.style.left = (ev.clientX - offsetX) + 'px';
+      el.style.top = (ev.clientY - offsetY) + 'px';
+    };
+    const onUp = ev => {
+      el.classList.remove('dragging');
+      el.style.position = '';
+      el.style.left = '';
+      el.style.top = '';
+      el.style.zIndex = '';
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+
+      const slots = document.querySelectorAll('.puzzle-slot');
+      slots.forEach(slot => {
+        const sr = slot.getBoundingClientRect();
+        if (ev.clientX >= sr.left - 20 && ev.clientX <= sr.right + 20 &&
+            ev.clientY >= sr.top - 20 && ev.clientY <= sr.bottom + 20 &&
+            parseInt(slot.dataset.slot) === parseInt(el.dataset.correct)) {
+          placed = true;
+          slot.classList.add('filled');
+          slot.innerHTML = el.innerHTML;
+          el.style.display = 'none';
+          onPlace();
+        }
+      });
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+}
+
+// Step 3: Sequence click
+function initSequence() {
+  const btns = document.querySelectorAll('#seqBtns .seq-btn');
+  btns.forEach(b => { b.classList.remove('done','wrong'); b.disabled = false });
+  let currentStep = 1;
+
+  btns.forEach(btn => {
+    btn.onclick = () => {
+      const step = parseInt(btn.dataset.step);
+      if (step === currentStep) {
+        btn.classList.add('done');
+        currentStep++;
+        if (currentStep > 3) {
+          showToast('✅ 急救顺序正确！');
+          setTimeout(() => { p4Step = 4; showP4Step(4); }, 800);
+        }
+      } else {
+        btn.classList.add('wrong');
+        setTimeout(() => btn.classList.remove('wrong'), 500);
+        showToast('❌ 顺序不对，想想急救流程');
+      }
+    };
+  });
+}
+
+// Step 4: Drag supplies
+function createSupplies() {
+  // Created on demand in initSupplyDrag
+}
+
+function initSupplyDrag() {
+  const area = document.getElementById('supplyArea');
+  area.innerHTML = '';
+  const supplies = ['icon_bandage','icon_medkit','icon_water','icon_blanket'];
+  const target = document.getElementById('targetZone');
+  let delivered = 0;
+
+  supplies.forEach(name => {
+    const el = document.createElement('div');
+    el.className = 'supply-item';
+    el.innerHTML = `<img src="assets/images/${name}.png" alt="">`;
+    area.appendChild(el);
+
+    let offsetX, offsetY;
+    el.addEventListener('touchstart', e => {
+      if (el.classList.contains('used')) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      const rect = el.getBoundingClientRect();
+      offsetX = t.clientX - rect.left;
+      offsetY = t.clientY - rect.top;
+      el.classList.add('dragging');
+    }, {passive: false});
+
+    el.addEventListener('touchmove', e => {
+      if (el.classList.contains('used')) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      el.style.position = 'fixed';
+      el.style.left = (t.clientX - offsetX) + 'px';
+      el.style.top = (t.clientY - offsetY) + 'px';
+      el.style.zIndex = '100';
+
+      // Highlight target
+      const tr = target.getBoundingClientRect();
+      if (t.clientX >= tr.left && t.clientX <= tr.right && t.clientY >= tr.top && t.clientY <= tr.bottom) {
+        target.classList.add('highlight');
+      } else {
+        target.classList.remove('highlight');
+      }
+    }, {passive: false});
+
+    el.addEventListener('touchend', e => {
+      if (el.classList.contains('used')) return;
+      el.classList.remove('dragging');
+      el.style.position = '';
+      el.style.left = '';
+      el.style.top = '';
+      el.style.zIndex = '';
+      target.classList.remove('highlight');
+
+      const t = e.changedTouches[0];
+      const tr = target.getBoundingClientRect();
+      if (t.clientX >= tr.left && t.clientX <= tr.right && t.clientY >= tr.top && t.clientY <= tr.bottom) {
+        el.classList.add('used');
+        delivered++;
+        showToast(`✅ +1 物资已送达 (${delivered}/4)`);
+        if (delivered >= 4) {
+          showToast('🎉 全部救援完成！请向上滑动领奖');
+          setTimeout(() => nextPage(), 3000);
+        }
+      }
+    });
+
+    // Mouse support
+    el.addEventListener('mousedown', e => {
+      if (el.classList.contains('used')) return;
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      el.classList.add('dragging');
+      el.style.position = 'fixed';
+      el.style.zIndex = '100';
+
+      const onMove = ev => {
+        el.style.left = (ev.clientX - offsetX) + 'px';
+        el.style.top = (ev.clientY - offsetY) + 'px';
+        const tr = target.getBoundingClientRect();
+        target.classList.toggle('highlight', ev.clientX >= tr.left && ev.clientX <= tr.right && ev.clientY >= tr.top && ev.clientY <= tr.bottom);
+      };
+      const onUp = ev => {
+        el.classList.remove('dragging');
+        el.style.position = '';
+        el.style.left = '';
+        el.style.top = '';
+        el.style.zIndex = '';
+        target.classList.remove('highlight');
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+
+        const tr = target.getBoundingClientRect();
+        if (ev.clientX >= tr.left && ev.clientX <= tr.right && ev.clientY >= tr.top && ev.clientY <= tr.bottom) {
+          el.classList.add('used');
+          delivered++;
+          showToast(`✅ +1 物资已送达 (${delivered}/4)`);
+          if (delivered >= 4) {
+            showToast('🎉 全部救援完成！请向上滑动领奖');
+            setTimeout(() => nextPage(), 1500);
+          }
+        }
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  });
+}
+
+// ============ P5: CERTIFICATE REVEAL ============
+(function initCertReveal() {
+  const cover = document.getElementById('certCover');
+  if (!cover) return;
+  let startY = 0, swiping = false;
+
+  cover.addEventListener('touchstart', e => {
+    startY = e.touches[0].clientY;
+    swiping = true;
+  }, {passive: true});
+
+  cover.addEventListener('touchmove', e => {
+    if (!swiping) return;
+    const dy = startY - e.touches[0].clientY;
+    if (dy > 10) {
+      cover.style.transform = `translateY(${-dy}px)`;
+      cover.style.transition = 'none';
+    }
+  }, {passive: true});
+
+  cover.addEventListener('touchend', e => {
+    swiping = false;
+    const dy = startY - e.changedTouches[0].clientY;
+    cover.style.transition = 'transform .6s cubic-bezier(.4,0,.2,1)';
+    if (dy > 35) {
+      cover.classList.add('unveiled');
+    } else {
+      cover.style.transform = '';
+    }
+  });
+
+  // Mouse support
+  let mDown = false;
+  cover.addEventListener('mousedown', e => { startY = e.clientY; mDown = true });
+  document.addEventListener('mousemove', e => {
+    if (!mDown) return;
+    const dy = startY - e.clientY;
+    if (dy > 10) {
+      cover.style.transform = `translateY(${-dy}px)`;
+      cover.style.transition = 'none';
+    }
+  });
+  document.addEventListener('mouseup', e => {
+    if (!mDown) return;
+    mDown = false;
+    const dy = startY - e.clientY;
+    cover.style.transition = 'transform .6s cubic-bezier(.4,0,.2,1)';
+    if (dy > 35) {
+      cover.classList.add('unveiled');
+    } else {
+      cover.style.transform = '';
+    }
+  });
+})();
+
+// ============ SHARE ============
+function shareResult() {
+  if (navigator.share) {
+    navigator.share({
+      title: '暴雨永川 · 线上应急救援纪实',
+      text: '我完成了永川暴雨应急救援任务，你也来试试！',
+      url: location.href
+    }).catch(() => copyLink());
+  } else {
+    copyLink();
+  }
+  document.querySelector('.share-anim') && (document.querySelector('.share-anim').style.display = 'block');
+  showToast('📤 感谢分享！');
+}
+
+function copyLink() {
+  navigator.clipboard?.writeText(location.href).then(() => {
+    showToast('🔗 链接已复制，分享给朋友吧');
+  }).catch(() => showToast('长按屏幕截图分享给朋友吧'));
+}
+
+// ============ RESTART ============
+function restart() {
+  p3Explored = 0;
+  whistleFound = false;
+  sweepDone = false;
+  p4Step = 1;
+  // Reset P3 - delete and recreate explore items
+  const area = document.getElementById('exploreArea');
+  area.innerHTML = '';
+  createExploreItems();
+  // Reset P3 UI
+  document.getElementById('p3Title').textContent = '🔍 探索救援现场';
+  document.getElementById('p3Hint').textContent = '点击杂物寻找工具，滑动清除路障';
+  document.getElementById('sweepArea').style.display = 'none';
+  document.getElementById('barrierFill').style.width = '0';
+  document.getElementById('barrierFill').style.background = 'rgba(46,204,113,.3)';
+  document.getElementById('barrierLabel').textContent = '← 左滑清理 →';
+  document.getElementById('trappedPerson').style.display = 'none';
+  document.getElementById('p3Status').textContent = '已探索 0 处';
+  // Reset P4 step 1 whistle ring
+  const prog = document.getElementById('whistleProgress');
+  if (prog) prog.style.strokeDashoffset = '220';
+  const center = document.querySelector('#whistleRing .progress-center');
+  if (center) center.innerHTML = '<img src="assets/images/icon_whistle.png" style="width:40px;height:40px;object-fit:contain">';
+  // Reset P5
+  document.getElementById('certCover').classList.remove('unveiled');
+  document.getElementById('certCover').style.transform = '';
+  document.getElementById('supplyArea').innerHTML = '';
+  document.getElementById('puzzleTray').innerHTML = '';
+  document.querySelectorAll('.puzzle-slot').forEach(s => { s.classList.remove('filled'); s.innerHTML = ''; });
+  document.querySelectorAll('.supply-item').forEach(s => { s.classList.remove('used'); });
+  showP4Step(1);
+  visitedPages.clear();
+  visitedPages.add(0);
+  goToPage(0);
+}
+
+// ============ LAZY LOAD BG IMAGES ============
+function lazyLoadBg() {
+  const pages = document.querySelectorAll('.page');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const bgEl = entry.target.querySelector('.bg');
+        if (bgEl && bgEl.dataset.loaded !== '1') {
+          const style = getComputedStyle(bgEl);
+          const url = style.backgroundImage;
+          if (url && url !== 'none') {
+            const img = new Image();
+            img.src = url.replace(/url\(["']?/, '').replace(/["']?\)/, '');
+            bgEl.dataset.loaded = '1';
+          }
+        }
+      }
+    });
+  }, {rootMargin: '200px'});
+  pages.forEach(p => observer.observe(p));
+}
+
+// ============ START ============
+window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
