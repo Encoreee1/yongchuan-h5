@@ -47,8 +47,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
 /* ========== PAGE SPECIFIC ========== */
 /* P3: Explore debris */
 .explore-area{position:relative;width:100%;height:55vh;margin:16px 0}
-.debris-item{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.15);border:2px dashed rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;animation:float 3s ease-in-out infinite}
-.debris-item img{width:40px;height:40px;object-fit:contain}
+.debris-item{position:absolute;width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.15);border:2px dashed rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;animation:float 3s ease-in-out infinite}
+.debris-item img{width:50px;height:50px;object-fit:contain}
 .debris-item:active{background:rgba(255,255,255,.3);transform:scale(1.15)}
 .debris-item.found{background:rgba(46,204,113,.3);border-color:#2ecc71;animation:none}
 .debris-item.checked{opacity:.4;pointer-events:none;animation:none}
@@ -59,10 +59,10 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
 .puzzle-board{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:260px;height:260px;margin:20px auto}
 .puzzle-slot{background:rgba(255,255,255,.15);border:2px dashed rgba(255,255,255,.5);border-radius:12px;display:flex;align-items:center;justify-content:center;transition:all .3s}
 .puzzle-slot.filled{background:rgba(46,204,113,.25);border-color:#2ecc71}
-.puzzle-slot img{width:36px;height:36px;object-fit:contain}
+.puzzle-slot img{width:42px;height:42px;object-fit:contain}
 .puzzle-tray{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0}
-.puzzle-piece{width:60px;height:60px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:grab;transition:transform .2s;touch-action:none}
-.puzzle-piece img{width:36px;height:36px;object-fit:contain;pointer-events:none}
+.puzzle-piece{width:66px;height:66px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:grab;transition:transform .2s;touch-action:none}
+.puzzle-piece img{width:42px;height:42px;object-fit:contain;pointer-events:none}
 .puzzle-piece.dragging{transform:scale(1.15);z-index:10;box-shadow:0 8px 30px rgba(0,0,0,.5)}
 /* P4: Sequence buttons */
 .seq-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:20px 0}
@@ -73,15 +73,15 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 /* P4: Drag supplies */
 .supply-area{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
-.supply-item{width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:none;transition:transform .2s,opacity .3s}
-.supply-item img{width:36px;height:36px;object-fit:contain;pointer-events:none}
+.supply-item{width:62px;height:62px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:none;transition:transform .2s,opacity .3s}
+.supply-item img{width:42px;height:42px;object-fit:contain;pointer-events:none}
 .supply-item.dragging{transform:scale(1.2);z-index:10;box-shadow:0 8px 30px rgba(0,0,0,.5)}
 .supply-item.used{opacity:.2;pointer-events:none}
-.target-zone{width:100px;height:100px;border-radius:50%;border:3px dashed rgba(255,255,255,.6);margin:20px auto;display:flex;align-items:center;justify-content:center;transition:all .3s;font-size:.85rem;color:rgba(255,255,255,.6)}
+.target-zone{width:110px;height:110px;border-radius:50%;border:3px dashed rgba(255,255,255,.6);margin:20px auto;display:flex;align-items:center;justify-content:center;transition:all .3s;font-size:.85rem;color:rgba(255,255,255,.6)}
 .target-zone.highlight{border-color:#2ecc71;background:rgba(46,204,113,.2)}
 /* P5: Certificate reveal */
 .cert-wrapper{position:relative;width:95%;max-width:440px;height:500px;margin:0 auto;overflow:hidden;border-radius:16px}
-.cert-cover{position:absolute;inset:0;background:linear-gradient(135deg,#c0392b,#8e44ad);z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:16px;cursor:pointer;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.cert-cover{position:absolute;inset:0;background:linear-gradient(135deg,#c0392b,#8e44ad);z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:16px;cursor:pointer;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform;touch-action:none}
 .cert-cover.unveiled{transform:translateY(-105%)}
 .cert-cover-text{font-size:.9rem;opacity:.8;margin-top:12px;animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
@@ -125,8 +125,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
 <!-- Page Indicator -->
 <div class="page-indicator" id="pageIndicator"></div>
 
-<!-- AI Label -->
-<div class="ai-label">AI 辅助生成素材 · 标注</div>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -140,7 +138,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
     <div class="rain-container" id="rainContainer"></div>
     <div class="content">
       <h1 class="title-main">暴雨永川<br>线上应急救援纪实</h1>
-      <p class="title-sub">2025年夏 · 永川特大暴雨<br>一场与时间赛跑的救援行动</p>
+      <p class="title-sub">2026年5月 · 永川特大暴雨<br>一场与时间赛跑的救援行动</p>
     </div>
     <div class="swipe-hint">
       <div class="arrow"></div>
@@ -154,12 +152,16 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
     <div class="content">
       <h2 class="title-sm">灾情速览</h2>
       <p class="body-text">
-        2025年7月，重庆市永川区遭遇特大暴雨袭击，<br>
-        6小时降雨量突破200毫米，城区多地内涝严重。<br><br>
-        多处道路中断，部分社区被洪水围困，<br>
-        数百名群众亟待救援。<br><br>
-        面对险情，救援力量火速集结，<br>
-        展开了一场惊心动魄的生命救援。
+        2026年5月23日夜至24日凌晨，重庆永川突遭<br>
+        百年一遇极端特大暴雨。<br><br>
+        核心区茶山竹海街道2小时雨量达296.6毫米<br>
+        （重庆历史极值），小时雨强103.6毫米。<br><br>
+        暴雨引发山洪、泥石流、滑坡，致<br>
+        9人遇难、11人失联。<br><br>
+        茶山竹海、中山路、双石镇灾情最重——<br>
+        房屋冲毁、道路中断、景区关闭。<br><br>
+        当地紧急启动防汛Ⅰ级、地质灾害Ⅲ级响应，<br>
+        转移安置2141人，全力抢险救灾。
       </p>
       <div style="margin-top:24px">
         <button class="btn btn-accent" onclick="goToPage(2,'forward')">开始救援任务 →</button>
@@ -948,7 +950,7 @@ function initSupplyDrag() {
 (function initCertReveal() {
   const cover = document.getElementById('certCover');
   if (!cover) return;
-  let startY = 0, swiping = false;
+  let startY = 0, swiping = false, rafId = null;
 
   cover.addEventListener('touchstart', e => {
     startY = e.touches[0].clientY;
@@ -957,18 +959,23 @@ function initSupplyDrag() {
 
   cover.addEventListener('touchmove', e => {
     if (!swiping) return;
+    e.preventDefault();
     const dy = startY - e.touches[0].clientY;
-    if (dy > 10) {
-      cover.style.transform = `translateY(${-dy}px)`;
-      cover.style.transition = 'none';
+    if (dy > 5) {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        cover.style.transition = 'none';
+        cover.style.transform = `translateY(${-Math.min(dy, 200)}px)`;
+      });
     }
-  }, {passive: true});
+  }, {passive: false});
 
   cover.addEventListener('touchend', e => {
     swiping = false;
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
     const dy = startY - e.changedTouches[0].clientY;
-    cover.style.transition = 'transform .6s cubic-bezier(.4,0,.2,1)';
-    if (dy > 35) {
+    cover.style.transition = 'transform .5s cubic-bezier(.25,.1,.25,1)';
+    if (dy > 30) {
       cover.classList.add('unveiled');
     } else {
       cover.style.transform = '';
@@ -981,17 +988,17 @@ function initSupplyDrag() {
   document.addEventListener('mousemove', e => {
     if (!mDown) return;
     const dy = startY - e.clientY;
-    if (dy > 10) {
-      cover.style.transform = `translateY(${-dy}px)`;
+    if (dy > 5) {
       cover.style.transition = 'none';
+      cover.style.transform = `translateY(${-Math.min(dy, 200)}px)`;
     }
   });
   document.addEventListener('mouseup', e => {
     if (!mDown) return;
     mDown = false;
     const dy = startY - e.clientY;
-    cover.style.transition = 'transform .6s cubic-bezier(.4,0,.2,1)';
-    if (dy > 35) {
+    cover.style.transition = 'transform .5s cubic-bezier(.25,.1,.25,1)';
+    if (dy > 30) {
       cover.classList.add('unveiled');
     } else {
       cover.style.transform = '';
