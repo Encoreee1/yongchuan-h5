@@ -986,8 +986,9 @@ function initSupplyDrag() {
   function unveil() {
     if (cover.classList.contains('unveiled')) return;
     cover.classList.add('unveiled');
-    // Brief scale bounce for tactile feedback
     cover.style.transition = 'transform .5s cubic-bezier(.34,1.56,.64,1)';
+    // Auto-advance to P6 after 4 seconds
+    setTimeout(() => nextPage(), 4000);
   }
 
   // Tap/click to reveal — works everywhere, no gesture conflicts
