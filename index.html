@@ -591,24 +591,21 @@ function initP4() {
   p4Step = 1;
   showP4Step(1);
   // Sequential audio: whistle instruction → rescue steps (only on first visit)
+  // No setTimeout — must stay within user gesture context for mobile autoplay
   if (!whistleInstructed) {
     whistleInstructed = true;
-    setTimeout(() => {
-      const whistle = document.getElementById('audioGuideWhistle');
-      const rescue = document.getElementById('audioGuideRescue');
-      if (whistle) {
-        // Stop any other audio, play whistle first
-        playAudio('audioGuideWhistle');
-        // When whistle finishes, play rescue instructions
-        whistle.addEventListener('ended', function chain() {
-          whistle.removeEventListener('ended', chain);
-          if (rescue) {
-            rescue.currentTime = 0;
-            rescue.play().catch(() => {});
-          }
-        }, {once: true});
-      }
-    }, 800);
+    const whistle = document.getElementById('audioGuideWhistle');
+    const rescue = document.getElementById('audioGuideRescue');
+    if (whistle) {
+      playAudio('audioGuideWhistle');
+      whistle.addEventListener('ended', function chain() {
+        whistle.removeEventListener('ended', chain);
+        if (rescue) {
+          rescue.currentTime = 0;
+          rescue.play().catch(() => {});
+        }
+      }, {once: true});
+    }
   }
 }
 
