@@ -953,7 +953,7 @@ function initSupplyDrag() {
         delivered++;
         showToast(`✅ +1 物资已送达 (${delivered}/4)`);
         if (delivered >= 4) {
-          showToast('🎉 全部救援完成！请向上滑动领奖');
+          showToast('🎉 救援成功，请领取你的奖状');
           setTimeout(() => nextPage(), 3000);
         }
       }
@@ -992,7 +992,7 @@ function initSupplyDrag() {
           delivered++;
           showToast(`✅ +1 物资已送达 (${delivered}/4)`);
           if (delivered >= 4) {
-            showToast('🎉 全部救援完成！请向上滑动领奖');
+            showToast('🎉 救援成功，请领取你的奖状');
             setTimeout(() => nextPage(), 3000);
           }
         }
