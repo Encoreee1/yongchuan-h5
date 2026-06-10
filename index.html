@@ -364,7 +364,7 @@ function goToPage(idx, direction) {
     visitedPages.add(idx);
     // Delay audio to sync with transition animation (500ms = transition duration)
     // P1: silent, P2: silent, P3: explore, P4: rescue, P5: award, P6: summary
-    const audios = [null, null, 'audioGuideExplore', 'audioGuideRescue', 'audioGuideAward', 'audioGuideSummary'];
+    const audios = [null, null, 'audioGuideExplore', null, 'audioGuideAward', 'audioGuideSummary'];
     const audioId = audios[idx];
     if (audioId) pendingAudio = setTimeout(() => { playAudio(audioId); pendingAudio = null; }, 500);
   } else if (isForward) {
@@ -590,10 +590,25 @@ let whistleInstructed = false;
 function initP4() {
   p4Step = 1;
   showP4Step(1);
-  // Play whistle instruction only once (not on restart)
+  // Sequential audio: whistle instruction → rescue steps (only on first visit)
   if (!whistleInstructed) {
     whistleInstructed = true;
-    setTimeout(() => playAudio('audioGuideWhistle'), 800);
+    setTimeout(() => {
+      const whistle = document.getElementById('audioGuideWhistle');
+      const rescue = document.getElementById('audioGuideRescue');
+      if (whistle) {
+        // Stop any other audio, play whistle first
+        playAudio('audioGuideWhistle');
+        // When whistle finishes, play rescue instructions
+        whistle.addEventListener('ended', function chain() {
+          whistle.removeEventListener('ended', chain);
+          if (rescue) {
+            rescue.currentTime = 0;
+            rescue.play().catch(() => {});
+          }
+        }, {once: true});
+      }
+    }, 800);
   }
 }
 
