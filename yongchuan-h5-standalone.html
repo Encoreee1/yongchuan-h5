@@ -725,7 +725,7 @@ function createPuzzle() {
     slot.className = 'puzzle-slot';
     slot.dataset.slot = i;
     // Show faint hint of the target icon
-    slot.innerHTML = `<img src="${ICON_MAP[PUZZLE_ICONS[i]]}.png" style="width:42px;height:42px;object-fit:contain;opacity:.25">`;
+    slot.innerHTML = `<img src="${ICON_MAP[PUZZLE_ICONS[i]]}" style="width:42px;height:42px;object-fit:contain;opacity:.4">`;
     board.appendChild(slot);
   }
 }
@@ -735,7 +735,7 @@ function resetPuzzleSlots() {
     s.classList.remove('filled');
     const i = parseInt(s.dataset.slot);
     if (!isNaN(i)) {
-      s.innerHTML = `<img src="${ICON_MAP[PUZZLE_ICONS[i]]}.png" style="width:42px;height:42px;object-fit:contain;opacity:.25">`;
+      s.innerHTML = `<img src="${ICON_MAP[PUZZLE_ICONS[i]]}" style="width:42px;height:42px;object-fit:contain;opacity:.4">`;
     }
   });
 }

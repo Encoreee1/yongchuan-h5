@@ -58,7 +58,7 @@ content = content.replace(
 )
 content = content.replace(
     'assets/images/${PUZZLE_ICONS[i]}.png',
-    '${ICON_MAP[PUZZLE_ICONS[i]]}.png'
+    '${ICON_MAP[PUZZLE_ICONS[i]]}'
 )
 
 # Insert ICON_MAP before </body>
