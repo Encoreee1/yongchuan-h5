@@ -308,6 +308,21 @@ function init() {
   updateNavButtons();
   // Lazy load backgrounds
   lazyLoadBg();
+  // Unlock audio on first user touch (required by mobile browsers)
+  document.addEventListener('touchstart', function unlock() {
+    document.removeEventListener('touchstart', unlock);
+    document.querySelectorAll('audio').forEach(a => {
+      a.load();
+      a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(() => {});
+    });
+  }, {once: true, passive: true});
+  document.addEventListener('click', function unlockClick() {
+    document.removeEventListener('click', unlockClick);
+    document.querySelectorAll('audio').forEach(a => {
+      a.load();
+      a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(() => {});
+    });
+  }, {once: true});
 }
 
 // ============ RAIN EFFECT ============
@@ -445,7 +460,13 @@ function playAudio(id) {
   const el = document.getElementById(id);
   if (!el) return;
   el.currentTime = 0;
-  el.play().catch(() => {});
+  // Ensure audio is loaded before playing (critical for mobile)
+  if (el.readyState < 2) el.load();
+  el.play().then(() => {}).catch(err => {
+    // Retry once on failure (common on mobile with unloaded audio)
+    el.load();
+    setTimeout(() => el.play().catch(() => {}), 100);
+  });
 }
 
 // ============ TOAST ============
@@ -591,20 +612,23 @@ function initP4() {
   p4Step = 1;
   showP4Step(1);
   // Sequential audio: whistle instruction → rescue steps (only on first visit)
-  // No setTimeout — must stay within user gesture context for mobile autoplay
   if (!whistleInstructed) {
     whistleInstructed = true;
     const whistle = document.getElementById('audioGuideWhistle');
     const rescue = document.getElementById('audioGuideRescue');
     if (whistle) {
+      let chained = false;
+      function playNext() {
+        if (chained) return;
+        chained = true;
+        whistle.removeEventListener('ended', playNext);
+        if (rescue) { rescue.currentTime = 0; rescue.play().catch(() => {}); }
+      }
+      whistle.addEventListener('ended', playNext, {once: true});
+      // Fallback: if ended doesn't fire within 8s, play next anyway
+      setTimeout(playNext, 8000);
+      // Now play the whistle
       playAudio('audioGuideWhistle');
-      whistle.addEventListener('ended', function chain() {
-        whistle.removeEventListener('ended', chain);
-        if (rescue) {
-          rescue.currentTime = 0;
-          rescue.play().catch(() => {});
-        }
-      }, {once: true});
     }
   }
 }
