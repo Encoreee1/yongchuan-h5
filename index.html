@@ -954,7 +954,7 @@ function initSupplyDrag() {
         showToast(`✅ +1 物资已送达 (${delivered}/4)`);
         if (delivered >= 4) {
           showToast('🎉 救援成功，请领取你的奖状');
-          setTimeout(() => nextPage(), 3000);
+          setTimeout(() => nextPage(), 1500);
         }
       }
     });
@@ -993,7 +993,7 @@ function initSupplyDrag() {
           showToast(`✅ +1 物资已送达 (${delivered}/4)`);
           if (delivered >= 4) {
             showToast('🎉 救援成功，请领取你的奖状');
-            setTimeout(() => nextPage(), 3000);
+            setTimeout(() => nextPage(), 1500);
           }
         }
       };
@@ -1013,7 +1013,7 @@ function initSupplyDrag() {
     cover.classList.add('unveiled');
     cover.style.transition = 'transform .5s cubic-bezier(.34,1.56,.64,1)';
     // Auto-advance to P6 after 4 seconds
-    setTimeout(() => nextPage(), 4000);
+    setTimeout(() => nextPage(), 3000);
   }
 
   // Tap/click to reveal — works everywhere, no gesture conflicts
