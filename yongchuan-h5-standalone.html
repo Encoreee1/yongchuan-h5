@@ -395,17 +395,19 @@ function goToPage(idx, direction) {
 }
 
 function updateNavButtons() {
+  // Nav buttons always hidden (swipe only on P1, in-page buttons elsewhere)
   const up = document.getElementById('navUp');
   const down = document.getElementById('navDown');
-  up.classList.toggle('hidden', currentPage === 0);
-  down.classList.toggle('hidden', currentPage === TOTAL_PAGES - 1);
+  if (up) up.classList.add('hidden');
+  if (down) down.classList.add('hidden');
 }
 
 function nextPage() { goToPage(currentPage + 1, 'forward') }
 function prevPage() { goToPage(currentPage - 1, 'backward') }
 
-// Keyboard navigation for desktop
+// Keyboard navigation for desktop (P1 only)
 document.addEventListener('keydown', e => {
+  if (currentPage !== 0) return;
   if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'j') {
     e.preventDefault(); nextPage();
   } else if (e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'k') {
@@ -417,11 +419,12 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Mouse wheel navigation for desktop
+// Mouse wheel navigation for desktop (P1 only)
 let wheelTimer = 0;
 document.addEventListener('wheel', e => {
+  if (currentPage !== 0) return;
   const now = Date.now();
-  if (now - wheelTimer < 800) return; // debounce
+  if (now - wheelTimer < 800) return;
   if (Math.abs(e.deltaY) < 40) return;
   wheelTimer = now;
   if (e.deltaY > 0) nextPage();
@@ -440,6 +443,7 @@ function initTouchNavigation() {
     isGameArea = !inNavZone && e.target.closest('.debris-item,.puzzle-piece,.supply-item,.seq-btn,#whistleRing,#barrierZone');
   }, {passive: true});
   document.addEventListener('touchend', e => {
+    if (currentPage !== 0) { isGameArea = false; inNavZone = false; return; }
     if (isGameArea && !inNavZone) { isGameArea = false; inNavZone = false; return; }
     isGameArea = false; inNavZone = false;
     const dy = startY - e.changedTouches[0].clientY;
