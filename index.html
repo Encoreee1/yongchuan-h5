@@ -584,10 +584,16 @@ function checkP3Complete() {
 // ============ P4: CORE RESCUE ============
 let p4Step = 1;
 
+let whistleInstructed = false;
+
 function initP4() {
   p4Step = 1;
   showP4Step(1);
-  // Audio handled by goToPage
+  // Play whistle instruction only once (not on restart)
+  if (!whistleInstructed) {
+    whistleInstructed = true;
+    setTimeout(() => playAudio('audioGuideWhistle'), 800);
+  }
 }
 
 function showP4Step(step) {
@@ -599,62 +605,72 @@ function showP4Step(step) {
   if (el) el.style.display = 'block';
   document.getElementById('p4StepLabel').textContent = `第 ${step}/4 步`;
 
-  if (step === 1) { initLongPress(); playAudio('audioGuideWhistle'); }
+  if (step === 1) initLongPress();
   if (step === 2) initPuzzleDrag();
   if (step === 3) initSequence();
   if (step === 4) initSupplyDrag();
 }
 
 // Step 1: Long press whistle (whistle was found in P3, used here)
+let longPressInited = false;
+let longPressTimer = null;
+let longPressStart = 0;
+const LONG_PRESS_DURATION = 1500;
+const LONG_PRESS_CIRC = 2 * Math.PI * 35;
+
+function resetWhistleRing() {
+  const prog = document.getElementById('whistleProgress');
+  const center = document.querySelector('#whistleRing .progress-center');
+  if (prog) prog.style.strokeDashoffset = LONG_PRESS_CIRC;
+  if (center) center.innerHTML = '<img src="assets/images/icon_whistle.png" style="width:40px;height:40px;object-fit:contain">';
+}
+
+function updateWhistleProgress(ms) {
+  const prog = document.getElementById('whistleProgress');
+  const center = document.querySelector('#whistleRing .progress-center');
+  if (!prog || !center) return;
+  const pct = Math.min(ms / LONG_PRESS_DURATION, 1);
+  prog.style.strokeDashoffset = LONG_PRESS_CIRC * (1 - pct);
+  center.textContent = pct >= 1 ? '✅' : Math.round(pct * 100) + '%';
+}
+
+function startWhistlePress() {
+  longPressStart = Date.now();
+  const center = document.querySelector('#whistleRing .progress-center');
+  if (center) center.textContent = '🔊';
+  longPressTimer = setInterval(() => {
+    const elapsed = Date.now() - longPressStart;
+    updateWhistleProgress(elapsed);
+    if (elapsed >= LONG_PRESS_DURATION) {
+      clearInterval(longPressTimer);
+      longPressTimer = null;
+      showToast('📢 求救信号已发出！');
+      setTimeout(() => { p4Step = 2; showP4Step(2); }, 600);
+    }
+  }, 50);
+}
+
+function endWhistlePress() {
+  if (longPressTimer) { clearInterval(longPressTimer); longPressTimer = null; }
+  if (Date.now() - (longPressStart || 0) < LONG_PRESS_DURATION) {
+    resetWhistleRing();
+    showToast('请长按直到进度条满');
+  }
+}
+
 function initLongPress() {
   const ring = document.getElementById('whistleRing');
-  const prog = document.getElementById('whistleProgress');
-  const center = ring.querySelector('.progress-center');
-  let timer, startTime;
-  const DURATION = 1500;
-  const circumference = 2 * Math.PI * 35;
-
-  function resetRing() {
-    prog.style.strokeDashoffset = circumference;
-    center.innerHTML = '<img src="assets/images/icon_whistle.png" style="width:40px;height:40px;object-fit:contain">';
+  if (!ring) return;
+  resetWhistleRing();
+  // Only attach listeners once
+  if (!longPressInited) {
+    longPressInited = true;
+    ring.addEventListener('touchstart', e => { e.preventDefault(); startWhistlePress(); }, {passive: false});
+    ring.addEventListener('touchend', endWhistlePress);
+    ring.addEventListener('mousedown', e => { e.preventDefault(); startWhistlePress(); });
+    ring.addEventListener('mouseup', endWhistlePress);
+    ring.addEventListener('mouseleave', endWhistlePress);
   }
-  resetRing();
-
-  function updateProgress(ms) {
-    const pct = Math.min(ms / DURATION, 1);
-    prog.style.strokeDashoffset = circumference * (1 - pct);
-    center.textContent = pct >= 1 ? '✅' : Math.round(pct * 100) + '%';
-  }
-
-  function startPress() {
-    startTime = Date.now();
-    center.textContent = '🔊';
-    timer = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      updateProgress(elapsed);
-      if (elapsed >= DURATION) {
-        clearInterval(timer);
-        showToast('📢 求救信号已发出！');
-        setTimeout(() => { p4Step = 2; showP4Step(2); }, 600);
-      }
-    }, 50);
-  }
-
-  function endPress() {
-    clearInterval(timer);
-    if (Date.now() - (startTime || 0) < DURATION) {
-      resetRing();
-      showToast('请长按直到进度条满');
-    }
-  }
-
-  // Touch
-  ring.addEventListener('touchstart', e => { e.preventDefault(); startPress(); }, {passive: false});
-  ring.addEventListener('touchend', endPress);
-  // Mouse
-  ring.addEventListener('mousedown', e => { e.preventDefault(); startPress(); });
-  ring.addEventListener('mouseup', endPress);
-  ring.addEventListener('mouseleave', endPress);
 }
 
 // Step 2: Puzzle
@@ -668,7 +684,7 @@ function createPuzzle() {
     slot.className = 'puzzle-slot';
     slot.dataset.slot = i;
     // Show faint hint of the target icon
-    slot.innerHTML = `<img src="assets/images/${PUZZLE_ICONS[i]}.png" style="width:36px;height:36px;object-fit:contain;opacity:.25">`;
+    slot.innerHTML = `<img src="assets/images/${PUZZLE_ICONS[i]}.png" style="width:42px;height:42px;object-fit:contain;opacity:.25">`;
     board.appendChild(slot);
   }
 }
@@ -678,7 +694,7 @@ function resetPuzzleSlots() {
     s.classList.remove('filled');
     const i = parseInt(s.dataset.slot);
     if (!isNaN(i)) {
-      s.innerHTML = `<img src="assets/images/${PUZZLE_ICONS[i]}.png" style="width:36px;height:36px;object-fit:contain;opacity:.25">`;
+      s.innerHTML = `<img src="assets/images/${PUZZLE_ICONS[i]}.png" style="width:42px;height:42px;object-fit:contain;opacity:.25">`;
     }
   });
 }
@@ -1047,10 +1063,7 @@ function restart() {
   document.getElementById('trappedPerson').style.display = 'none';
   document.getElementById('p3Status').textContent = '已探索 0 处';
   // Reset P4 step 1 whistle ring
-  const prog = document.getElementById('whistleProgress');
-  if (prog) prog.style.strokeDashoffset = '220';
-  const center = document.querySelector('#whistleRing .progress-center');
-  if (center) center.innerHTML = '<img src="assets/images/icon_whistle.png" style="width:40px;height:40px;object-fit:contain">';
+  resetWhistleRing();
   // Reset P5
   document.getElementById('certCover').classList.remove('unveiled');
   document.getElementById('certCover').style.transform = '';
